@@ -36,16 +36,6 @@ echo Password: %SA_PASSWORD%
 echo Port: %SSQL_PORT%
 goto:eof
 
-REM Function to stop container
-:stop
-docker stop %CONTAINER_NAME%
-goto:eof
-
-REM Function to start container
-:start
-docker start %CONTAINER_NAME%
-goto:eof
-
 REM Function to initialize all
 :init-all
 call :run-container
@@ -53,3 +43,7 @@ call :setup-backup
 call :restore-db
 call :info
 goto:eof
+
+REM Call init-all to start the process
+call :init-all
+
