@@ -55,7 +55,7 @@ Alternatives e.g.
 
 - **Username:** `SA`
 - **Password:** `Password+123`
-- **Port:** `2019`
+- **Port:** `1433`
 - **Host:** `localhost`
 
 ## More about the AdventureWorks database

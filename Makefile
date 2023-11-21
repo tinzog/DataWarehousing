@@ -1,6 +1,6 @@
 # Define the SA password as a variable for ease of change
 SA_PASSWORD=Password+123
-SSQL_PORT=2019
+SSQL_PORT=1433
 CONTAINER_NAME=SQL19
 
 # Pull the Docker image

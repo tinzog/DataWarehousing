@@ -1,7 +1,7 @@
 @echo off
 REM Define the SA password and other variables
 SET SA_PASSWORD=Password+123
-SET SSQL_PORT=2019
+SET SSQL_PORT=1433
 SET CONTAINER_NAME=SQL19
 
 call :init-all
