@@ -41,7 +41,15 @@ Now you should have Microsoft SQL Server running in a Docker container with two 
 
 #### 3. Connect to SQL Server in your DB Client
 
-Use a database client such as *SQL Server  Management Studio* (https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) on Windows or *DBeaver* (https://dbeaver.io) on other platforms to connect to the database using the following parameters:
+Use your favourite db client to connect to the SQL Server.
+
+On Windows ideally:  *SQL Server  Management Studio* (SSMS)
+
+Alternatives e.g.
+
+* DBeaver (all platforms)
+* SQLPro for MSSQL (Mac only)
+* DB Gate (all platforms)
 
 ##### SQL Server Details
 
