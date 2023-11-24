@@ -2,7 +2,7 @@
 
 ## Overview
 
-This setp starts a Microsoft Server 2019 Docker container and imports two data sources for subsequent DataWarehousing ecercises.
+This setp starts a Microsoft Server 2019 Docker container and imports two data sources for subsequent DataWarehousing exercises.
 
 ## Prerequisites
 
@@ -36,17 +36,17 @@ This setp starts a Microsoft Server 2019 Docker container and imports two data s
    bash setup.bat
 ```
 
-Now you should have Microsoft SQL Server running in a Docker container with two data sources.
-*NOTE:* the container is removed when you start the setup again. In order to reuse the existing container use `docker start SQL19` or `docker stop SQL19`.
+If you encounter problems when executing the scripts, please try to run the steps (pull-image, run-container, set-backup,restore-db) separately.
+
+You should now have a MSQL Server instance running in a Docker container with two data sources required for our exercises.
+
+*NOTE:* the container including the databases is removed when you run the init script again. In order to reuse the existing container use `docker start SQL19` or `docker stop SQL19`.
 
 #### 3. Connect to SQL Server in your DB Client
 
-Use your favourite db client to connect to the SQL Server.
+Use your favourite db client to connect to the SQL Server. It must be able to handle MSQL Server connections, e.g.:
 
-On Windows ideally:  *SQL Server  Management Studio* (SSMS)
-
-Alternatives e.g.
-
+* SQL Server Management Studio (SSMS) (Windows only)
 * DBeaver (all platforms)
 * SQLPro for MSSQL (Mac only)
 * DB Gate (all platforms)
