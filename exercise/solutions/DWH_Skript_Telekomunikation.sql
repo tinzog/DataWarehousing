@@ -4,22 +4,8 @@
 --
 --SQL Code to Create Data Warehouse Dimension and Fact Tables from QUELLE Database on base  Logical Model
 --***************************************************************
-
-USE master;
-
-IF DB_ID('Ziel_DWH') IS NOT NULL
-
-  DROP DATABASE [Ziel_DWH];
-
---GO
-
-CREATE DATABASE [Ziel_DWH]
-
-
-
-use Ziel_DWH
+USE Ziel_DWH
  --CustomerDimension
-
 
  CREATE TABLE [dbo].[CustomerDimension](
 	[Per_ID] [char](10) NOT NULL,
@@ -75,14 +61,14 @@ ALTER TABLE CustomerDimension ADD PRIMARY KEY (Per_ID,Acct_ID);
 )
 
 -- Load the dimensions
- insert  INTO Ziel_DWH.dbo.BillDimension (
-Bill_ID
+ INSERT INTO Ziel_DWH.dbo.BillDimension (
+		Bill_ID
        , Current_Balance
 	   , Current_Amt_Due
 	   , Past_Due_Amt 
        , Bill_Type
-	   ,Acct_ID
-	   ,Due_Date
+	   , Acct_ID
+	   , Due_Date
  )
  SELECT BILL.Bill_ID
        , BILL.Current_Balance
@@ -112,13 +98,13 @@ Bill_ID
 -- Load the dimensions
 INSERT  INTO Ziel_DWH.dbo.CalendarDimension
 ( [FullDate]
-      ,[Day_of_Week] 
-      , [Weekday]
-       ,[Day_of_Month]
-       ,[MonthNm]
-       ,[Month]
-       ,[Quarter]
-      , [Year]
+       , [Day_of_Week] 
+       , [Weekday]
+       , [Day_of_Month]
+       , [MonthNm]
+       , [Month]
+       , [Quarter]
+       ,[Year]
 )
  SELECT [FullDateAlternateKey] as [FullDate]
       ,[DayNumberOfWeek] as [Day_of_Week] 
@@ -183,8 +169,6 @@ Per_ID
 	   , Current_Balance
 	   ,Current_Amt_Due
 	   , Bill.Past_Due_Amt 
-
-
 )
  SELECT CustomerDimension.Per_ID
        , CustomerDimension.Acct_ID
