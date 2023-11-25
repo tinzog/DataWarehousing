@@ -20,12 +20,12 @@ USE Ziel_DWH
 	[ZIP] [int] NULL
 	)
 -- Load the dimensions
- insert into Ziel_DWH.dbo.CustomerDimension (Per_ID
+ INSERT INTO Ziel_DWH.dbo.CustomerDimension (Per_ID
  , Acct_ID
  , User_ID
  , Cust_FName
  , Cust_LName
- ,  Email_Addr
+ , Email_Addr
  , House_Num
  , Street_Nm
  , State
@@ -40,9 +40,9 @@ USE Ziel_DWH
  , ACCOUNT.Street_Nm
  , ACCOUNT.State
  , ACCOUNT.ZIP 
- FROM Quelle_OLTP_System.dbo.PERSON 
- left join Quelle_OLTP_System.dbo.SS_WEBSITE_USER ON PERSON.Per_ID = SS_WEBSITE_USER.Per_ID
- left join Quelle_OLTP_System.dbo.ACCOUNT ON PERSON.Per_ID = ACCOUNT.Per_ID  
+ FROM QUELLE_OLTP.dbo.PERSON 
+ left join QUELLE_OLTP.dbo.SS_WEBSITE_USER ON PERSON.Per_ID = SS_WEBSITE_USER.Per_ID
+ left join QUELLE_OLTP.dbo.ACCOUNT ON PERSON.Per_ID = ACCOUNT.Per_ID  
 
 
 ALTER TABLE CustomerDimension ADD PRIMARY KEY (Per_ID,Acct_ID);
@@ -77,8 +77,8 @@ ALTER TABLE CustomerDimension ADD PRIMARY KEY (Per_ID,Acct_ID);
        , ACCOUNT.Bill_Type
 	   ,BILL.Acct_ID
 	   ,BILL.Due_Date
- FROM Quelle_OLTP_System.dbo.BILL 
- left join Quelle_OLTP_System.dbo.ACCOUNT ON BILL.Acct_ID = ACCOUNT.Acct_ID  
+ FROM QUELLE_OLTP.dbo.BILL 
+ left join QUELLE_OLTP.dbo.ACCOUNT ON BILL.Acct_ID = ACCOUNT.Acct_ID  
 
 
  ALTER TABLE BillDimension ADD PRIMARY KEY (Bill_ID);
@@ -114,7 +114,7 @@ INSERT  INTO Ziel_DWH.dbo.CalendarDimension
       ,[MonthNumberOfYear] as [Month]
        ,[FiscalQuarter]   as	[Quarter]
       ,[FiscalYear] as [Year] 
-FROM Quelle_OLTP_System.[dbo].[Date]
+FROM QUELLE_OLTP.[dbo].[Date]
 
 
   
@@ -143,7 +143,7 @@ INSERT INTO Ziel_DWH.dbo.PaymentDimension (
 	   ,PAYMENT.Bill_ID
 	    ,PAYMENT.Pay_Date
  
- FROM Quelle_OLTP_System.dbo.PAYMENT  
+ FROM QUELLE_OLTP.dbo.PAYMENT  
 
  ALTER TABLE PaymentDimension ADD PRIMARY KEY (Pay_ID);
 
@@ -178,7 +178,7 @@ Per_ID
 	   ,Bill.Current_Amt_Due
 	   , Bill.Past_Due_Amt 
 
-FROM Quelle_OLTP_System.dbo.Bill
+FROM QUELLE_OLTP.dbo.Bill
 left join Ziel_DWH.dbo.CustomerDimension ON Bill.Acct_ID = CustomerDimension.Acct_ID 
 left join Ziel_DWH.dbo.CalendarDimension ON Bill.Due_Date = CalendarDimension.FullDate
 
@@ -207,8 +207,8 @@ INSERT INTO Ziel_DWH.dbo.PaymentFacts (
 	   , Payment.Pay_Amt 
 	    ,CustomerDimension.Per_ID
 
-FROM Quelle_OLTP_System.dbo.Payment
-left join Quelle_OLTP_System.dbo.Bill ON Payment.Bill_ID = Bill.BIll_ID 
+FROM QUELLE_OLTP.dbo.Payment
+left join QUELLE_OLTP.dbo.Bill ON Payment.Bill_ID = Bill.BIll_ID 
 left join Ziel_DWH.dbo.CustomerDimension ON Bill.Acct_ID = CustomerDimension.Acct_ID 
 left join Ziel_DWH.dbo.CalendarDimension ON Payment.Pay_Date = CalendarDimension.FullDate
 
@@ -240,33 +240,3 @@ FOREIGN KEY (FullDate) REFERENCES CalendarDimension(FullDate);
 ALTER TABLE PaymentFacts
 ADD CONSTRAINT FK_PaymentsD_PaymentFacts
 FOREIGN KEY (Pay_ID) REFERENCES PaymentDimension(Pay_ID);
-
-
-
---------------------------------------------------
----  DWH Abfrage  
---------------------------------------------------
-
---What is the sum of bill amounts due in October?
-
-SELECT sum(BillFacts.Current_Amt_Due) as "Total Due In October"
-FROM dbo.BillFacts inner join dbo.CalendarDimension
-ON BillFacts.FullDate = CalendarDimension.FullDate WHERE CalendarDimension.MonthNm = 'October'
-
-
---What is the sum of payments received in October, by type?  
-
-SELECT sum(PaymentFacts.Pay_Amt) as "Total Paid In October", PaymentDimension.Pay_Method as "Payment Method" 
-FROM dbo.PaymentFacts 
-inner join dbo.CalendarDimension ON PaymentFacts.FullDate = CalendarDimension.FullDate 
-inner join dbo.PaymentDimension ON PaymentFacts.Pay_ID = PaymentDimension.Pay_ID
-WHERE CalendarDimension.MonthNm = 'October' GROUP BY PaymentDimension.Pay_Method 
-
---What are the first and last names of customers that have past due balances sometime in October? 
-
-SELECT dbo.CustomerDimension.Cust_FName as "First Name", dbo.CustomerDimension.Cust_LName 
-FROM dbo.CustomerDimension 
-INNER JOIN dbo.BillFacts ON dbo.CustomerDimension.Per_ID = dbo.BillFacts.Per_ID 
-                                                AND dbo.CustomerDimension.Acct_ID = dbo.BillFacts.Acct_id 
-INNER JOIN dbo.CalendarDimension ON dbo.BillFacts.FullDate = dbo.CalendarDimension.FullDate 
-WHERE dbo.CalendarDimension.MonthNm = 'October' AND dbo.BillFacts.Past_Due_Amt > '0.00'
