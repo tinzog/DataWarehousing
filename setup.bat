@@ -21,13 +21,11 @@ goto :eof
 :setup-backup
 echo Setting up backup...
 docker exec -it SQL19 mkdir /var/opt/mssql/backup 2> NUL
-docker cp databases/Quelle_csv_load.bak SQL19:/var/opt/mssql/backup
 docker cp databases/Quelle_OLTP_System.bak SQL19:/var/opt/mssql/backup
 goto :eof
 
 :restore-db
 echo Restoring database...
-docker exec -it SQL19 /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "%SA_PASSWORD%" -Q "RESTORE DATABASE Quelle_csv FROM DISK = '/var/opt/mssql/backup/Quelle_csv_load.bak' WITH MOVE 'Quelle_csv' TO '/var/opt/mssql/data/Quelle_csv', MOVE 'Quelle_csv_log' TO '/var/opt/mssql/data/Quelle_csv_log'"
 docker exec -it SQL19 /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "%SA_PASSWORD%" -Q "RESTORE DATABASE Quelle_OLTP FROM DISK = '/var/opt/mssql/backup/Quelle_OLTP_System.bak' WITH MOVE 'Quelle_OLTP_System' TO '/var/opt/mssql/data/Quelle_OLTP_System', MOVE 'Quelle_OLTP_System_log' TO '/var/opt/mssql/data/Quelle_OLTP_System_log'"
 goto :eof
 
