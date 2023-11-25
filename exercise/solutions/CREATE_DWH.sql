@@ -6,8 +6,4 @@
 --***************************************************************
 USE master;
 
-IF DB_ID('Ziel_DWH') IS NOT NULL
-
-  DROP DATABASE [Ziel_DWH];
-
-CREATE DATABASE [Ziel_DWH]
+CREATE DATABASE [Ziel_DWH] Collate Latin1_General_CI_AS;
