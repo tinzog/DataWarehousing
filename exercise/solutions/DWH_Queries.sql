@@ -2,7 +2,7 @@
 --------------------------------------------------
 ---  DWH Beispiel Abfragen 
 --------------------------------------------------
-
+USE Ziel_DWH
 --What is the sum of bill amounts due in October?
 
 SELECT sum(BillFacts.Current_Amt_Due) as "Total Due In October"
