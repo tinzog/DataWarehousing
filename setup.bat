@@ -24,6 +24,18 @@ docker exec -it SQL19 mkdir /var/opt/mssql/backup 2> NUL
 docker cp databases/Quelle_OLTP_System.bak SQL19:/var/opt/mssql/backup
 goto :eof
 
+:wait-for-db
+echo Waiting for SQL Server to be ready...
+:wait-loop
+docker exec %CONTAINER_NAME% /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "%SA_PASSWORD%" -Q "SELECT 1" > NUL 2>&1
+if errorlevel 1 (
+    echo Waiting for database...
+    timeout /t 5 > NUL
+    goto wait-loop
+)
+echo SQL Server is ready.
+goto :eof
+
 :restore-db
 echo Restoring database...
 docker exec -it SQL19 /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "%SA_PASSWORD%" -Q "RESTORE DATABASE Quelle_OLTP FROM DISK = '/var/opt/mssql/backup/Quelle_OLTP_System.bak' WITH MOVE 'Quelle_OLTP_System' TO '/var/opt/mssql/data/Quelle_OLTP_System', MOVE 'Quelle_OLTP_System_log' TO '/var/opt/mssql/data/Quelle_OLTP_System_log'"
@@ -52,6 +64,7 @@ echo Initializing all...
 call :pull-image
 call :run-container
 call :setup-backup
+call :wait-for-db
 call :restore-db
 call :info
 goto :eof
