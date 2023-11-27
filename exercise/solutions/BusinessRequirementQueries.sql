@@ -1,7 +1,7 @@
 --Queries for Select Business Requirements
 
 
-use  DEMO_1
+use  Quelle_OLTP
 -- #1 – Customer Names and Person IDs 
 SELECT Per_ID, Cust_FName, Cust_LName FROM PERSON 
 
